@@ -50,6 +50,30 @@ def health_check():
         }), 503
 
 
+# Temporary endpoint to test reading MongoDB data
+@app.route("/api/v1.0/database-test", methods=["GET"])
+def database_test():
+    try:
+        room_document = db.rooms.find_one(
+            {},
+            {"_id": 0}
+        )
+
+        if room_document is None:
+            return jsonify({
+                "message": "No room documents found"
+            }), 404
+
+        return jsonify({
+            "message": "Successfully retrieved MongoDB data",
+            "data": room_document
+        }), 200
+
+    except PyMongoError:
+        return jsonify({
+            "message": "Database query failed"
+        }), 503
+
 # Start Flask server
 if __name__ == "__main__":
     app.run(debug=True)
