@@ -74,6 +74,32 @@ def database_test():
             "message": "Database query failed"
         }), 503
 
+
+# GET all rooms
+@app.route("/api/v1.0/rooms", methods=["GET"])
+def show_all_rooms():
+
+    all_rooms = []
+
+    room_groups = db.rooms.find({}, {"_id": 0})
+
+    for group in room_groups:
+
+        room_type = group["room_type"]
+
+        rooms = group["room_category"]["rooms"]
+
+        for room in rooms:
+
+            room_data = room.copy()
+
+            room_data["room_type"] = room_type
+
+            all_rooms.append(room_data)
+
+    return jsonify(all_rooms), 200
+
+
 # Start Flask server
 if __name__ == "__main__":
     app.run(debug=True)
