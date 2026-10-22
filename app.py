@@ -1,5 +1,5 @@
 
-from flask import Flask, jsonify
+from flask import Flask, jsonify, request
 from pymongo import MongoClient
 from pymongo.errors import PyMongoError
 
@@ -128,6 +128,63 @@ def show_one_room(room_id):
     return jsonify({
         "message": "Room not found"
     }), 404
+
+
+# POST - Add a new room
+@app.route("/api/v1.0/rooms", methods=["POST"])
+def add_room():
+
+    data = request.get_json(silent=True)
+
+    if not isinstance(data, dict):
+        return jsonify({
+            "message": "A JSON object is required"
+        }), 400
+
+    room_type = data.get("room_type")
+    new_room = data.get("room")
+
+    if not isinstance(room_type, str) or not isinstance(new_room, dict):
+        return jsonify({
+            "message": "Room type and room details are required"
+        }), 400
+
+    room_id = new_room.get("room_id")
+
+    if type(room_id) is not int:
+        return jsonify({
+            "message": "Room ID must be an integer"
+        }), 400
+
+    # Check if room ID already exists
+    existing_room = db.rooms.find_one({
+        "room_category.rooms.room_id": room_id
+    })
+
+    if existing_room is not None:
+        return jsonify({
+            "message": "Room ID already exists"
+        }), 409
+
+    # Add room inside the matching room group
+    result = db.rooms.update_one(
+        {"room_type": room_type},
+        {
+            "$push": {
+                "room_category.rooms": new_room
+            }
+        }
+    )
+
+    if result.matched_count == 0:
+        return jsonify({
+            "message": "Room type not found"
+        }), 404
+
+    return jsonify({
+        "message": "Room added successfully",
+        "room_id": room_id
+    }), 201
 
 # Start Flask server
 if __name__ == "__main__":
