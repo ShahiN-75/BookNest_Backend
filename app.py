@@ -100,6 +100,35 @@ def show_all_rooms():
     return jsonify(all_rooms), 200
 
 
+# GET one room by ID
+@app.route("/api/v1.0/rooms/<int:room_id>", methods=["GET"])
+def show_one_room(room_id):
+
+    room_group = db.rooms.find_one(
+        {"room_category.rooms.room_id": room_id},
+        {"_id": 0}
+    )
+
+    if room_group is None:
+        return jsonify({
+            "message": "Room not found"
+        }), 404
+
+    rooms = room_group["room_category"]["rooms"]
+
+    for room in rooms:
+        if room["room_id"] == room_id:
+
+            room_data = room.copy()
+
+            room_data["room_type"] = room_group["room_type"]
+
+            return jsonify(room_data), 200
+
+    return jsonify({
+        "message": "Room not found"
+    }), 404
+
 # Start Flask server
 if __name__ == "__main__":
     app.run(debug=True)
