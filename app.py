@@ -186,6 +186,58 @@ def add_room():
         "room_id": room_id
     }), 201
 
+
+# PUT - Update an existing room
+@app.route("/api/v1.0/rooms/<int:room_id>", methods=["PUT"])
+def update_room(room_id):
+
+    data = request.get_json(silent=True)
+
+    if not isinstance(data, dict):
+        return jsonify({
+            "message": "A JSON object is required"
+        }), 400
+
+    # Check whether the room exists
+    room_group = db.rooms.find_one({
+        "room_category.rooms.room_id": room_id
+    })
+
+    if room_group is None:
+        return jsonify({
+            "message": "Room not found"
+        }), 404
+
+    # Validate the new price
+    new_price = data.get("base_price")
+
+    if type(new_price) not in (int, float) or new_price < 0:
+        return jsonify({
+            "message": "A valid base_price is required"
+        }), 400
+
+    # Update only the matching room inside the nested array
+    result = db.rooms.update_one(
+        {"room_category.rooms.room_id": room_id},
+        {
+            "$set": {
+                "room_category.rooms.$.pricing.base_price": new_price
+            }
+        }
+    )
+
+    if result.matched_count == 0:
+        return jsonify({
+            "message": "Room not found"
+        }), 404
+
+    return jsonify({
+        "message": "Room updated successfully",
+        "room_id": room_id,
+        "new_price": new_price
+    }), 200
+
+
 # Start Flask server
 if __name__ == "__main__":
     app.run(debug=True)
