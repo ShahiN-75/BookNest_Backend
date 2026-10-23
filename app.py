@@ -238,6 +238,32 @@ def update_room(room_id):
     }), 200
 
 
+# DELETE - Remove a room by ID
+@app.route("/api/v1.0/rooms/<int:room_id>", methods=["DELETE"])
+def delete_room(room_id):
+
+    result = db.rooms.update_one(
+        {"room_category.rooms.room_id": room_id},
+        {
+            "$pull": {
+                "room_category.rooms": {
+                    "room_id": room_id
+                }
+            }
+        }
+    )
+
+    if result.modified_count == 0:
+        return jsonify({
+            "message": "Room not found"
+        }), 404
+
+    return jsonify({
+        "message": "Room deleted successfully",
+        "room_id": room_id
+    }), 200
+
+
 # Start Flask server
 if __name__ == "__main__":
     app.run(debug=True)
