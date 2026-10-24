@@ -2,6 +2,7 @@
 from flask import Flask, jsonify, request
 from pymongo import MongoClient
 from pymongo.errors import PyMongoError
+import math
 
 from config import Config
 
@@ -264,46 +265,77 @@ def delete_room(room_id):
     }), 200
 
 
-# GET - Search rooms by maximum nightly price
+
+
+# Search rooms by price and room type
 @app.route("/api/v1.0/rooms/search", methods=["GET"])
 def search_rooms():
+    max_price_input = request.args.get("max_price")
+    room_type = request.args.get("room_type")
 
-    max_price = request.args.get("max_price", type=float)
-
-    if max_price is None or max_price < 0:
+    if max_price_input is None and not room_type:
         return jsonify({
-            "message": "A valid max_price is required"
+            "message": "Provide max_price or room_type"
         }), 400
 
-    matching_rooms = []
+    # Check that the price is valid
+    max_price = None
 
+    if max_price_input is not None:
+        try:
+            max_price = float(max_price_input)
+        except ValueError:
+            return jsonify({
+                "message": "Invalid maximum price"
+            }), 400
+
+        if max_price < 0 or not math.isfinite(max_price):
+            return jsonify({
+                "message": "Invalid maximum price"
+            }), 400
+
+    matching_rooms = []
     room_groups = db.rooms.find({}, {"_id": 0})
 
     for group in room_groups:
+        group_type = group["room_type"]
 
-        room_type = group["room_type"]
+        if room_type and group_type.lower() != room_type.strip().lower():
+            continue
+
         rooms = group["room_category"]["rooms"]
 
         for room in rooms:
+            if max_price is not None:
 
-            rate_plans = room.get("pricing", {}).get("rate_plans", [])
+                # Find the standard nightly rate
+                rate_plans = room.get("pricing", {}).get("rate_plans", [])
 
-            for plan in rate_plans:
+                standard_plan = next(
+                    (
+                        plan for plan in rate_plans
+                        if plan.get("plan_name") == "Standard Rate"
+                    ),
+                    None
+                )
 
-                if plan.get("plan_name") == "Standard Rate":
+                if standard_plan is None:
+                    continue
 
-                    price = plan.get("rate_details", {}).get(
-                        "base_price_per_night"
-                    )
+                price = standard_plan.get(
+                    "rate_details", {}
+                ).get("base_price_per_night")
 
-                    if type(price) in (int, float) and price <= max_price:
+                if type(price) not in (int, float):
+                    continue
 
-                        room_data = room.copy()
-                        room_data["room_type"] = room_type
+                if price > max_price:
+                    continue
 
-                        matching_rooms.append(room_data)
-
-                    break
+            # Keep the room type with each matching room
+            room_data = room.copy()
+            room_data["room_type"] = group_type
+            matching_rooms.append(room_data)
 
     return jsonify(matching_rooms), 200
 
