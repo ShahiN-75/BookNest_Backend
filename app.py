@@ -264,6 +264,49 @@ def delete_room(room_id):
     }), 200
 
 
+# GET - Search rooms by maximum nightly price
+@app.route("/api/v1.0/rooms/search", methods=["GET"])
+def search_rooms():
+
+    max_price = request.args.get("max_price", type=float)
+
+    if max_price is None or max_price < 0:
+        return jsonify({
+            "message": "A valid max_price is required"
+        }), 400
+
+    matching_rooms = []
+
+    room_groups = db.rooms.find({}, {"_id": 0})
+
+    for group in room_groups:
+
+        room_type = group["room_type"]
+        rooms = group["room_category"]["rooms"]
+
+        for room in rooms:
+
+            rate_plans = room.get("pricing", {}).get("rate_plans", [])
+
+            for plan in rate_plans:
+
+                if plan.get("plan_name") == "Standard Rate":
+
+                    price = plan.get("rate_details", {}).get(
+                        "base_price_per_night"
+                    )
+
+                    if type(price) in (int, float) and price <= max_price:
+
+                        room_data = room.copy()
+                        room_data["room_type"] = room_type
+
+                        matching_rooms.append(room_data)
+
+                    break
+
+    return jsonify(matching_rooms), 200
+
 # Start Flask server
 if __name__ == "__main__":
     app.run(debug=True)
