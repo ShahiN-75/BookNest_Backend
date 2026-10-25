@@ -377,6 +377,53 @@ def search_rooms():
     return jsonify(matching_rooms), 200
 
 
+# Get all bookings
+@app.route("/api/v1.0/bookings", methods=["GET"])
+def get_all_bookings():
+    bookings_list = []
+
+    booking_groups = db.Bookings.find({}, {"_id": 0})
+
+    for group in booking_groups:
+        for room in group["rooms"]:
+            for month in room["months"]:
+                for booking in month["bookings"]:
+                    booking_data = booking.copy()
+                    booking_data["room_id"] = room["room_id"]
+                    booking_data["room_number"] = room["room_number"]
+                    booking_data["room_type"] = group["room_type"]
+
+                    bookings_list.append(booking_data)
+
+    return jsonify(bookings_list), 200
+
+
+# Get booking by ID
+@app.route("/api/v1.0/bookings/<int:booking_id>", methods=["GET"])
+def get_booking_by_id(booking_id):
+
+    booking_group = db.Bookings.find_one(
+        {"rooms.months.bookings.booking_id": booking_id},
+        {"_id": 0}
+    )
+
+    if booking_group:
+        for room in booking_group["rooms"]:
+            for month in room["months"]:
+                for booking in month["bookings"]:
+
+                    if booking["booking_id"] == booking_id:
+                        booking_data = booking.copy()
+                        booking_data["room_id"] = room["room_id"]
+                        booking_data["room_number"] = room["room_number"]
+                        booking_data["room_type"] = booking_group["room_type"]
+
+                        return jsonify(booking_data), 200
+
+    return jsonify({"message": "Booking not found"}), 404
+
+
+
 # Start Flask server
 if __name__ == "__main__":
     app.run(debug=True)
