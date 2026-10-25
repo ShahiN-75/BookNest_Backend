@@ -267,32 +267,42 @@ def delete_room(room_id):
 
 
 
-# Search rooms by price and room type
+
+# Search rooms by price, room type and guest capacity
 @app.route("/api/v1.0/rooms/search", methods=["GET"])
 def search_rooms():
     max_price_input = request.args.get("max_price")
     room_type = request.args.get("room_type")
+    guests_input = request.args.get("guests")
 
-    if max_price_input is None and not room_type:
+    if max_price_input is None and not room_type and guests_input is None:
         return jsonify({
-            "message": "Provide max_price or room_type"
+            "message": "Provide at least one search filter"
         }), 400
 
-    # Check that the price is valid
+    # Validate the maximum price
     max_price = None
 
     if max_price_input is not None:
         try:
             max_price = float(max_price_input)
         except ValueError:
-            return jsonify({
-                "message": "Invalid maximum price"
-            }), 400
+            return jsonify({"message": "Invalid maximum price"}), 400
 
         if max_price < 0 or not math.isfinite(max_price):
-            return jsonify({
-                "message": "Invalid maximum price"
-            }), 400
+            return jsonify({"message": "Invalid maximum price"}), 400
+
+    # Validate the number of guests
+    guests = None
+
+    if guests_input is not None:
+        try:
+            guests = int(guests_input)
+        except ValueError:
+            return jsonify({"message": "Invalid number of guests"}), 400
+
+        if guests < 1:
+            return jsonify({"message": "Invalid number of guests"}), 400
 
     matching_rooms = []
     room_groups = db.rooms.find({}, {"_id": 0})
@@ -306,9 +316,18 @@ def search_rooms():
         rooms = group["room_category"]["rooms"]
 
         for room in rooms:
-            if max_price is not None:
 
-                # Find the standard nightly rate
+            # Check the room's maximum occupancy
+            if guests is not None:
+                capacity = room.get("room_information", {}).get(
+                    "occupancy", {}
+                ).get("maximum_guests")
+
+                if type(capacity) is not int or capacity < guests:
+                    continue
+
+            # Check the standard nightly rate
+            if max_price is not None:
                 rate_plans = room.get("pricing", {}).get("rate_plans", [])
 
                 standard_plan = next(
@@ -332,7 +351,6 @@ def search_rooms():
                 if price > max_price:
                     continue
 
-            # Keep the room type with each matching room
             room_data = room.copy()
             room_data["room_type"] = group_type
             matching_rooms.append(room_data)
