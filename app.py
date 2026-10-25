@@ -268,14 +268,17 @@ def delete_room(room_id):
 
 
 
-# Search rooms by price, room type and guest capacity
+
+# Search rooms by price, type, capacity and availability
 @app.route("/api/v1.0/rooms/search", methods=["GET"])
 def search_rooms():
     max_price_input = request.args.get("max_price")
     room_type = request.args.get("room_type")
     guests_input = request.args.get("guests")
+    status = request.args.get("status")
 
-    if max_price_input is None and not room_type and guests_input is None:
+    if all(value is None for value in
+           [max_price_input, room_type, guests_input, status]):
         return jsonify({
             "message": "Provide at least one search filter"
         }), 400
@@ -304,6 +307,15 @@ def search_rooms():
         if guests < 1:
             return jsonify({"message": "Invalid number of guests"}), 400
 
+    # Check the availability status
+    if status is not None:
+        status = status.strip().lower()
+
+        if status != "available":
+            return jsonify({
+                "message": "Invalid availability status"
+            }), 400
+
     matching_rooms = []
     room_groups = db.rooms.find({}, {"_id": 0})
 
@@ -317,7 +329,6 @@ def search_rooms():
 
         for room in rooms:
 
-            # Check the room's maximum occupancy
             if guests is not None:
                 capacity = room.get("room_information", {}).get(
                     "occupancy", {}
@@ -326,7 +337,6 @@ def search_rooms():
                 if type(capacity) is not int or capacity < guests:
                     continue
 
-            # Check the standard nightly rate
             if max_price is not None:
                 rate_plans = room.get("pricing", {}).get("rate_plans", [])
 
@@ -351,11 +361,21 @@ def search_rooms():
                 if price > max_price:
                     continue
 
+            # Check the room's current availability
+            if status is not None:
+                room_status = room.get("room_management", {}).get(
+                    "availability", {}
+                ).get("current_status", "")
+
+                if room_status.lower() != status:
+                    continue
+
             room_data = room.copy()
             room_data["room_type"] = group_type
             matching_rooms.append(room_data)
 
     return jsonify(matching_rooms), 200
+
 
 # Start Flask server
 if __name__ == "__main__":
