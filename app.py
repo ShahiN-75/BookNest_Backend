@@ -606,7 +606,7 @@ def add_booking():
     }), 201
 
 
-# Step 6.4 - Update booking by ID
+# Update booking by ID
 @app.route("/api/v1.0/bookings/<int:booking_id>", methods=["PUT"])
 def update_booking(booking_id):
 
@@ -736,7 +736,7 @@ def update_booking(booking_id):
     return jsonify({"message": "Booking not found"}), 404
 
 
-# Step 6.5 - Cancel booking by ID
+# Cancel booking by ID
 @app.route("/api/v1.0/bookings/<int:booking_id>/cancel", methods=["PATCH"])
 def cancel_booking(booking_id):
 
@@ -785,6 +785,54 @@ def cancel_booking(booking_id):
                         "message": "Booking cancelled successfully",
                         "booking_id": booking_id,
                         "status": "cancelled"
+                    }), 200
+
+    return jsonify({"message": "Booking not found"}), 404
+
+
+# Delete booking by ID
+@app.route("/api/v1.0/bookings/<int:booking_id>", methods=["DELETE"])
+def delete_booking(booking_id):
+
+    # Find the booking in the collection
+    booking_group = db.Bookings.find_one({
+        "rooms.months.bookings.booking_id": booking_id
+    })
+
+    if not booking_group:
+        return jsonify({"message": "Booking not found"}), 404
+
+    # Locate the correct room and month
+    for room in booking_group["rooms"]:
+        for month in room["months"]:
+            for booking in month["bookings"]:
+
+                if booking["booking_id"] == booking_id:
+
+                    # Remove only the matching booking
+                    result = db.Bookings.update_one(
+                        {"_id": booking_group["_id"]},
+                        {
+                            "$pull": {
+                                "rooms.$[r].months.$[m].bookings": {
+                                    "booking_id": booking_id
+                                }
+                            }
+                        },
+                        array_filters=[
+                            {"r.room_id": room["room_id"]},
+                            {"m.month": month["month"]}
+                        ]
+                    )
+
+                    if result.modified_count == 0:
+                        return jsonify({
+                            "message": "Booking could not be deleted"
+                        }), 409
+
+                    return jsonify({
+                        "message": "Booking deleted successfully",
+                        "booking_id": booking_id
                     }), 200
 
     return jsonify({"message": "Booking not found"}), 404
