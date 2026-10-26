@@ -838,6 +838,57 @@ def delete_booking(booking_id):
     return jsonify({"message": "Booking not found"}), 404
 
 
+# Calculate booking statistics
+@app.route("/api/v1.0/bookings/statistics", methods=["GET"])
+def get_booking_statistics():
+
+    total_bookings = 0
+    confirmed_bookings = 0
+    cancelled_bookings = 0
+    total_booking_value = 0
+
+    # Retrieve all booking groups from MongoDB
+    booking_groups = db.Bookings.find({}, {"_id": 0})
+
+    # Navigate the nested booking structure
+    for group in booking_groups:
+        for room in group.get("rooms", []):
+            for month in room.get("months", []):
+                for booking in month.get("bookings", []):
+
+                    total_bookings += 1
+
+                    status = booking["reservation"]["status"]
+
+                    if status == "confirmed":
+                        confirmed_bookings += 1
+
+                    if status == "cancelled":
+                        cancelled_bookings += 1
+
+                    # Calculate value of active bookings
+                    if status not in ["cancelled", "no-show"]:
+                        total_price = booking["payment_summary"]["pricing"]["total_price"]
+                        total_booking_value += float(total_price)
+
+    # Calculate cancellation percentage
+    if total_bookings > 0:
+        cancellation_rate = round(
+            (cancelled_bookings / total_bookings) * 100, 2
+        )
+    else:
+        cancellation_rate = 0
+
+    return jsonify({
+        "total_bookings": total_bookings,
+        "confirmed_bookings": confirmed_bookings,
+        "cancelled_bookings": cancelled_bookings,
+        "cancellation_rate": cancellation_rate,
+        "total_booking_value": round(total_booking_value, 2)
+    }), 200
+
+
+
 # Start Flask server
 if __name__ == "__main__":
     app.run(debug=True)
