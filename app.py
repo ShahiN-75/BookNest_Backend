@@ -992,6 +992,46 @@ def get_room_occupancy():
     }), 200
 
 
+# Calculate average length of stay
+@app.route("/api/v1.0/bookings/average-stay", methods=["GET"])
+def get_average_length_of_stay():
+
+    total_bookings = 0
+    total_nights = 0
+
+    # Retrieve booking documents from MongoDB
+    booking_groups = db.Bookings.find({}, {"_id": 0})
+
+    # Navigate the nested booking structure
+    for group in booking_groups:
+        for room in group.get("rooms", []):
+            for month in room.get("months", []):
+                for booking in month.get("bookings", []):
+
+                    status = booking["reservation"]["status"]
+
+                    # Exclude cancelled and no-show bookings
+                    if status in ["cancelled", "no-show"]:
+                        continue
+
+                    nights = booking["reservation"]["stay"]["total_nights"]
+
+                    total_bookings += 1
+                    total_nights += nights
+
+    # Calculate average length of stay
+    if total_bookings > 0:
+        average_stay = round(total_nights / total_bookings, 2)
+    else:
+        average_stay = 0
+
+    return jsonify({
+        "total_active_bookings": total_bookings,
+        "total_booked_nights": total_nights,
+        "average_length_of_stay": average_stay
+    }), 200
+
+
 # Start Flask server
 if __name__ == "__main__":
     app.run(debug=True)
