@@ -3,8 +3,8 @@ from flask import Flask, jsonify, request
 from pymongo import MongoClient
 from pymongo.errors import PyMongoError
 import math
-from datetime import datetime, timedelta
-
+from datetime import date, datetime, timedelta
+from calendar import monthrange
 from config import Config
 
 
@@ -887,6 +887,109 @@ def get_booking_statistics():
         "total_booking_value": round(total_booking_value, 2)
     }), 200
 
+
+# Calculate monthly room occupancy
+@app.route("/api/v1.0/bookings/occupancy", methods=["GET"])
+def get_room_occupancy():
+
+    month = request.args.get("month")
+
+    if not month:
+        return jsonify({
+            "message": "Month is required. Use YYYY-MM format"
+        }), 400
+
+    try:
+        selected_month = datetime.strptime(month, "%Y-%m")
+
+        year = selected_month.year
+        month_number = selected_month.month
+
+        days_in_month = monthrange(year, month_number)[1]
+
+        month_start = date(year, month_number, 1)
+        month_end = month_start + timedelta(days=days_in_month)
+
+    except (ValueError, OverflowError):
+        return jsonify({
+            "message": "Invalid month format. Use YYYY-MM"
+        }), 400
+
+    # Count rooms from the rooms collection
+    room_ids = set()
+
+    for group in db.rooms.find({}, {"_id": 0}):
+        room_category = group.get("room_category", {})
+
+        for room in room_category.get("rooms", []):
+            if "room_id" in room:
+                room_ids.add(room["room_id"])
+
+    total_rooms = len(room_ids)
+
+    if total_rooms == 0:
+        return jsonify({
+            "message": "No rooms found"
+        }), 404
+
+    available_room_nights = total_rooms * days_in_month
+
+    # Store unique occupied dates for each room
+    occupied_nights = set()
+
+    booking_groups = db.Bookings.find({}, {"_id": 0})
+
+    for group in booking_groups:
+        for room in group.get("rooms", []):
+
+            room_id = room.get("room_id")
+
+            if room_id not in room_ids:
+                continue
+
+            for booking_month in room.get("months", []):
+                for booking in booking_month.get("bookings", []):
+
+                    status = booking["reservation"]["status"]
+
+                    if status in ["cancelled", "no-show"]:
+                        continue
+
+                    stay = booking["reservation"]["stay"]
+
+                    check_in = datetime.strptime(
+                        stay["check_in"], "%Y-%m-%d"
+                    ).date()
+
+                    check_out = datetime.strptime(
+                        stay["check_out"], "%Y-%m-%d"
+                    ).date()
+
+                    # Count only nights inside the selected month
+                    start = max(check_in, month_start)
+                    end = min(check_out, month_end)
+
+                    current_date = start
+
+                    while current_date < end:
+                        occupied_nights.add((room_id, current_date))
+                        current_date += timedelta(days=1)
+
+    total_occupied_nights = len(occupied_nights)
+
+    occupancy_rate = round(
+        (total_occupied_nights / available_room_nights) * 100,
+        2
+    )
+
+    return jsonify({
+        "month": month,
+        "total_rooms": total_rooms,
+        "days_in_month": days_in_month,
+        "available_room_nights": available_room_nights,
+        "occupied_room_nights": total_occupied_nights,
+        "occupancy_rate": occupancy_rate
+    }), 200
 
 
 # Start Flask server
