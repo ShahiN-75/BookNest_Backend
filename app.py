@@ -1032,6 +1032,111 @@ def get_average_length_of_stay():
     }), 200
 
 
+# Calculate monthly booking revenue
+@app.route("/api/v1.0/bookings/monthly-revenue", methods=["GET"])
+def get_monthly_booking_revenue():
+
+    month = request.args.get("month")
+
+    if not month:
+        return jsonify({
+            "message": "Month is required. Use YYYY-MM format"
+        }), 400
+
+    # Validate the selected month
+    try:
+        selected_month = datetime.strptime(month, "%Y-%m")
+
+        if selected_month.strftime("%Y-%m") != month:
+            raise ValueError
+
+        year = selected_month.year
+        month_number = selected_month.month
+
+        days_in_month = monthrange(year, month_number)[1]
+
+        month_start = date(year, month_number, 1)
+        month_end = month_start + timedelta(days=days_in_month)
+
+    except (ValueError, OverflowError):
+        return jsonify({
+            "message": "Invalid month format. Use YYYY-MM"
+        }), 400
+
+    total_revenue = 0
+    total_bookings = 0
+    total_booked_nights = 0
+
+    # Retrieve booking documents
+    booking_groups = db.Bookings.find({}, {"_id": 0})
+
+    for group in booking_groups:
+        for room in group.get("rooms", []):
+            for booking_month in room.get("months", []):
+                for booking in booking_month.get("bookings", []):
+
+                    status = booking["reservation"]["status"]
+
+                    # Exclude cancelled and no-show bookings
+                    if status in ["cancelled", "no-show"]:
+                        continue
+
+                    stay = booking["reservation"]["stay"]
+
+                    check_in = datetime.strptime(
+                        stay["check_in"], "%Y-%m-%d"
+                    ).date()
+
+                    check_out = datetime.strptime(
+                        stay["check_out"], "%Y-%m-%d"
+                    ).date()
+
+                    # Find the nights inside the selected month
+                    start = max(check_in, month_start)
+                    end = min(check_out, month_end)
+
+                    if start >= end:
+                        continue
+
+                    total_bookings += 1
+
+                    nightly_rates = booking.get(
+                        "payment_summary", {}
+                    ).get("nightly_rates", [])
+
+                    rate_by_date = {
+                        rate["date"]: float(rate["rate"])
+                        for rate in nightly_rates
+                    }
+
+                    default_rate = float(
+                        booking["payment_summary"]["pricing"]["price_per_night"]
+                    )
+
+                    current_date = start
+
+                    while current_date < end:
+
+                        date_string = current_date.strftime("%Y-%m-%d")
+
+                        nightly_price = rate_by_date.get(
+                            date_string, default_rate
+                        )
+
+                        total_revenue += nightly_price
+                        total_booked_nights += 1
+
+                        current_date += timedelta(days=1)
+
+    return jsonify({
+        "month": month,
+        "total_bookings": total_bookings,
+        "total_booked_nights": total_booked_nights,
+        "total_booking_revenue": round(total_revenue, 2),
+        "currency": "GBP"
+    }), 200
+
+
 # Start Flask server
 if __name__ == "__main__":
     app.run(debug=True)
