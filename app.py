@@ -606,6 +606,136 @@ def add_booking():
     }), 201
 
 
+# Step 6.4 - Update booking by ID
+@app.route("/api/v1.0/bookings/<int:booking_id>", methods=["PUT"])
+def update_booking(booking_id):
+
+    data = request.get_json(silent=True)
+
+    if not isinstance(data, dict):
+        return jsonify({"message": "Valid JSON data is required"}), 400
+
+    required_fields = ["check_in", "check_out", "price_per_night"]
+
+    for field in required_fields:
+        if field not in data:
+            return jsonify({"message": f"{field} is required"}), 400
+
+    try:
+        check_in = datetime.strptime(data["check_in"], "%Y-%m-%d")
+        check_out = datetime.strptime(data["check_out"], "%Y-%m-%d")
+        price_per_night = float(data["price_per_night"])
+    except (ValueError, TypeError, OverflowError):
+        return jsonify({"message": "Invalid booking data"}), 400
+
+    if check_out <= check_in:
+        return jsonify({"message": "Check-out must be after check-in"}), 400
+
+    if price_per_night <= 0:
+        return jsonify({"message": "Price must be greater than zero"}), 400
+
+    # Find the booking inside MongoDB
+    booking_group = db.Bookings.find_one({
+        "rooms.months.bookings.booking_id": booking_id
+    })
+
+    if not booking_group:
+        return jsonify({"message": "Booking not found"}), 404
+
+    for room in booking_group["rooms"]:
+        for month in room["months"]:
+            for booking in month["bookings"]:
+
+                if booking["booking_id"] == booking_id:
+
+                    # Check for overlapping active bookings
+                    for other_month in room["months"]:
+                        for other_booking in other_month["bookings"]:
+
+                            if other_booking["booking_id"] == booking_id:
+                                continue
+
+                            if other_booking["reservation"]["status"] in [
+                                "cancelled", "no-show"
+                            ]:
+                                continue
+
+                            stay = other_booking["reservation"]["stay"]
+
+                            existing_in = datetime.strptime(
+                                stay["check_in"], "%Y-%m-%d"
+                            )
+                            existing_out = datetime.strptime(
+                                stay["check_out"], "%Y-%m-%d"
+                            )
+
+                            if check_in < existing_out and check_out > existing_in:
+                                return jsonify({
+                                    "message": "Room is already booked for these dates"
+                                }), 409
+
+                    total_nights = (check_out - check_in).days
+                    total_price = round(
+                        total_nights * price_per_night, 2
+                    )
+
+                    nightly_rates = []
+
+                    for day in range(total_nights):
+                        current_date = check_in + timedelta(days=day)
+
+                        nightly_rates.append({
+                            "date": current_date.strftime("%Y-%m-%d"),
+                            "weekday": current_date.strftime("%A"),
+                            "rate": price_per_night
+                        })
+
+                    updated_booking = booking.copy()
+
+                    updated_booking["reservation"]["stay"] = {
+                        "check_in": data["check_in"],
+                        "check_out": data["check_out"],
+                        "total_nights": total_nights
+                    }
+
+                    updated_booking["payment_summary"]["pricing"] = {
+                        "price_per_night": price_per_night,
+                        "total_nights": total_nights,
+                        "total_price": total_price
+                    }
+
+                    updated_booking["payment_summary"]["nightly_rates"] = nightly_rates
+
+                    # Find booking position in the nested array
+                    booking_index = month["bookings"].index(booking)
+
+                    result = db.Bookings.update_one(
+                        {"_id": booking_group["_id"]},
+                        {
+                            "$set": {
+                                "rooms.$[r].months.$[m].bookings.$[b]": updated_booking
+                            }
+                        },
+                        array_filters=[
+                            {"r.room_id": room["room_id"]},
+                            {"m.month": month["month"]},
+                            {"b.booking_id": booking_id}
+                        ]
+                    )
+
+                    if result.modified_count == 0:
+                        return jsonify({
+                            "message": "No booking changes were saved"
+                        }), 200
+
+                    return jsonify({
+                        "message": "Booking updated successfully",
+                        "booking": updated_booking
+                    }), 200
+
+    return jsonify({"message": "Booking not found"}), 404
+
+
 # Start Flask server
 if __name__ == "__main__":
     app.run(debug=True)
