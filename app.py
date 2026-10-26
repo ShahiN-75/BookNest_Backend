@@ -3,6 +3,7 @@ from flask import Flask, jsonify, request
 from pymongo import MongoClient
 from pymongo.errors import PyMongoError
 import math
+from datetime import datetime, timedelta
 
 from config import Config
 
@@ -422,6 +423,187 @@ def get_booking_by_id(booking_id):
 
     return jsonify({"message": "Booking not found"}), 404
 
+
+# Create a new booking
+@app.route("/api/v1.0/bookings", methods=["POST"])
+def add_booking():
+
+    data = request.get_json(silent=True)
+
+    if not isinstance(data, dict):
+        return jsonify({"message": "Valid JSON data is required"}), 400
+
+    required_fields = [
+        "booking_id", "user_id", "room_id",
+        "check_in", "check_out", "price_per_night"
+    ]
+
+    for field in required_fields:
+        if field not in data:
+            return jsonify({"message": f"{field} is required"}), 400
+
+    try:
+        booking_id = int(data["booking_id"])
+        user_id = int(data["user_id"])
+        room_id = int(data["room_id"])
+
+        check_in = datetime.strptime(data["check_in"], "%Y-%m-%d")
+        check_out = datetime.strptime(data["check_out"], "%Y-%m-%d")
+
+        price_per_night = float(data["price_per_night"])
+
+    except (ValueError, TypeError, OverflowError):
+        return jsonify({"message": "Invalid booking data"}), 400
+
+    if booking_id <= 0 or user_id <= 0 or room_id <= 0:
+        return jsonify({"message": "IDs must be positive integers"}), 400
+
+    if check_out <= check_in:
+        return jsonify({"message": "Check-out must be after check-in"}), 400
+
+    if price_per_night <= 0:
+        return jsonify({"message": "Price must be greater than zero"}), 400
+
+    # Check whether booking ID already exists
+    existing_booking = db.Bookings.find_one({
+        "rooms.months.bookings.booking_id": booking_id
+    })
+
+    if existing_booking:
+        return jsonify({"message": "Booking ID already exists"}), 409
+
+    # Find the correct room inside the nested collection
+    booking_group = db.Bookings.find_one({
+        "rooms.room_id": room_id
+    })
+
+    if not booking_group:
+        return jsonify({"message": "Room not found in bookings collection"}), 404
+
+    # Check existing reservations for this room
+    for room in booking_group["rooms"]:
+        if room["room_id"] == room_id:
+
+            for month in room["months"]:
+                for booking in month["bookings"]:
+
+                    if booking["reservation"]["status"] in [
+                        "cancelled", "no-show"
+                    ]:
+                        continue
+
+                    stay = booking["reservation"]["stay"]
+
+                    existing_check_in = datetime.strptime(
+                        stay["check_in"], "%Y-%m-%d"
+                    )
+
+                    existing_check_out = datetime.strptime(
+                        stay["check_out"], "%Y-%m-%d"
+                    )
+
+                    if check_in < existing_check_out and check_out > existing_check_in:
+                        return jsonify({
+                            "message": "Room is already booked for these dates"
+                        }), 409
+
+            break
+
+    # Calculate booking price
+    total_nights = (check_out - check_in).days
+    total_price = round(total_nights * price_per_night, 2)
+
+    # Generate nightly rates
+    nightly_rates = []
+
+    for day in range(total_nights):
+        current_date = check_in + timedelta(days=day)
+
+        nightly_rates.append({
+            "date": current_date.strftime("%Y-%m-%d"),
+            "weekday": current_date.strftime("%A"),
+            "rate": price_per_night
+        })
+
+    # Create the booking using our existing dataset structure
+    new_booking = {
+        "booking_id": booking_id,
+        "user_id": user_id,
+
+        "reservation": {
+            "status": "confirmed",
+            "stay": {
+                "check_in": data["check_in"],
+                "check_out": data["check_out"],
+                "total_nights": total_nights
+            }
+        },
+
+        "guest_information": {
+            "party": [
+                {"type": "adult", "count": 2},
+                {"type": "child", "count": 0},
+                {"type": "baby", "count": 0}
+            ]
+        },
+
+        "booking_preferences": {
+            "meal": {"code": "BB"},
+            "additional_services": {
+                "parking": {"required": False},
+                "special_requests": {"count": 0}
+            }
+        },
+
+        "payment_summary": {
+            "pricing": {
+                "price_per_night": price_per_night,
+                "total_nights": total_nights,
+                "total_price": total_price
+            },
+            "nightly_rates": nightly_rates
+        }
+    }
+
+    # Month is based on the check-in date
+    booking_month = check_in.strftime("%Y-%m")
+
+    # Add booking to an existing month
+    result = db.Bookings.update_one(
+        {"rooms.room_id": room_id},
+        {
+            "$push": {
+                "rooms.$[room].months.$[month].bookings": new_booking
+            }
+        },
+        array_filters=[
+            {"room.room_id": room_id},
+            {"month.month": booking_month}
+        ]
+    )
+
+    # If the month does not exist, create it
+    if result.modified_count == 0:
+
+        result = db.Bookings.update_one(
+            {"rooms.room_id": room_id},
+            {
+                "$push": {
+                    "rooms.$.months": {
+                        "month": booking_month,
+                        "bookings": [new_booking]
+                    }
+                }
+            }
+        )
+
+    if result.modified_count == 0:
+        return jsonify({"message": "Booking could not be saved"}), 500
+
+    return jsonify({
+        "message": "Booking created successfully",
+        "booking": new_booking
+    }), 201
 
 
 # Start Flask server
