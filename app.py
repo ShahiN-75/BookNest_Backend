@@ -736,6 +736,60 @@ def update_booking(booking_id):
     return jsonify({"message": "Booking not found"}), 404
 
 
+# Step 6.5 - Cancel booking by ID
+@app.route("/api/v1.0/bookings/<int:booking_id>/cancel", methods=["PATCH"])
+def cancel_booking(booking_id):
+
+    # Find the booking in MongoDB
+    booking_group = db.Bookings.find_one({
+        "rooms.months.bookings.booking_id": booking_id
+    })
+
+    if not booking_group:
+        return jsonify({"message": "Booking not found"}), 404
+
+    # Find the specific booking inside the nested arrays
+    for room in booking_group["rooms"]:
+        for month in room["months"]:
+            for booking in month["bookings"]:
+
+                if booking["booking_id"] == booking_id:
+
+                    # Check if already cancelled
+                    if booking["reservation"]["status"] == "cancelled":
+                        return jsonify({
+                            "message": "Booking is already cancelled"
+                        }), 409
+
+                    # Update only the booking status
+                    result = db.Bookings.update_one(
+                        {"_id": booking_group["_id"]},
+                        {
+                            "$set": {
+                                "rooms.$[r].months.$[m].bookings.$[b].reservation.status": "cancelled"
+                            }
+                        },
+                        array_filters=[
+                            {"r.room_id": room["room_id"]},
+                            {"m.month": month["month"]},
+                            {"b.booking_id": booking_id}
+                        ]
+                    )
+
+                    if result.modified_count == 0:
+                        return jsonify({
+                            "message": "Booking cancellation failed"
+                        }), 500
+
+                    return jsonify({
+                        "message": "Booking cancelled successfully",
+                        "booking_id": booking_id,
+                        "status": "cancelled"
+                    }), 200
+
+    return jsonify({"message": "Booking not found"}), 404
+
+
 # Start Flask server
 if __name__ == "__main__":
     app.run(debug=True)
