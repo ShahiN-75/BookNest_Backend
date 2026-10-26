@@ -1137,6 +1137,148 @@ def get_monthly_booking_revenue():
     }), 200
 
 
+# Generate monthly room utilisation report
+@app.route("/api/v1.0/rooms/utilisation", methods=["GET"])
+def get_room_utilisation():
+
+    month = request.args.get("month")
+
+    if not month:
+        return jsonify({
+            "message": "Month is required. Use YYYY-MM format"
+        }), 400
+
+    try:
+        selected_month = datetime.strptime(month, "%Y-%m")
+
+        if selected_month.strftime("%Y-%m") != month:
+            raise ValueError
+
+        year = selected_month.year
+        month_number = selected_month.month
+
+        days_in_month = monthrange(year, month_number)[1]
+
+        month_start = date(year, month_number, 1)
+        month_end = month_start + timedelta(days=days_in_month)
+
+    except (ValueError, OverflowError):
+        return jsonify({
+            "message": "Invalid month format. Use YYYY-MM"
+        }), 400
+
+    # Retrieve all rooms from the nested rooms collection
+    room_data = {}
+
+    for group in db.rooms.find({}, {"_id": 0}):
+
+        room_type = group.get("room_type")
+        room_category = group.get("room_category", {})
+
+        for room in room_category.get("rooms", []):
+
+            room_id = room["room_id"]
+
+            room_data[room_id] = {
+                "room_id": room_id,
+                "room_number": room["room_number"],
+                "room_type": room_type,
+                "occupied_dates": set(),
+                "booking_ids": set()
+            }
+
+    if not room_data:
+        return jsonify({
+            "message": "No rooms found"
+        }), 404
+
+    # Retrieve booking information
+    booking_groups = db.Bookings.find({}, {"_id": 0})
+
+    for group in booking_groups:
+        for room in group.get("rooms", []):
+
+            room_id = room.get("room_id")
+
+            if room_id not in room_data:
+                continue
+
+            for booking_month in room.get("months", []):
+                for booking in booking_month.get("bookings", []):
+
+                    status = booking["reservation"]["status"]
+
+                    # Exclude cancelled and no-show bookings
+                    if status in ["cancelled", "no-show"]:
+                        continue
+
+                    stay = booking["reservation"]["stay"]
+
+                    check_in = datetime.strptime(
+                        stay["check_in"], "%Y-%m-%d"
+                    ).date()
+
+                    check_out = datetime.strptime(
+                        stay["check_out"], "%Y-%m-%d"
+                    ).date()
+
+                    # Find dates within the selected month
+                    start = max(check_in, month_start)
+                    end = min(check_out, month_end)
+
+                    if start >= end:
+                        continue
+
+                    room_data[room_id]["booking_ids"].add(
+                        booking["booking_id"]
+                    )
+
+                    current_date = start
+
+                    while current_date < end:
+
+                        room_data[room_id]["occupied_dates"].add(
+                            current_date
+                        )
+
+                        current_date += timedelta(days=1)
+
+    # Calculate utilisation for each room
+    utilisation_report = []
+
+    for room_id, details in room_data.items():
+
+        booked_nights = len(details["occupied_dates"])
+
+        utilisation_rate = round(
+            (booked_nights / days_in_month) * 100,
+            2
+        )
+
+        utilisation_report.append({
+            "room_id": room_id,
+            "room_number": details["room_number"],
+            "room_type": details["room_type"],
+            "total_bookings": len(details["booking_ids"]),
+            "booked_nights": booked_nights,
+            "available_nights": days_in_month,
+            "utilisation_rate": utilisation_rate
+        })
+
+    # Show most utilised rooms first
+    utilisation_report.sort(
+        key=lambda room: room["utilisation_rate"],
+        reverse=True
+    )
+
+    return jsonify({
+        "month": month,
+        "total_rooms": len(utilisation_report),
+        "days_in_month": days_in_month,
+        "rooms": utilisation_report
+    }), 200
+
+
 # Start Flask server
 if __name__ == "__main__":
     app.run(debug=True)
