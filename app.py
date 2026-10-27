@@ -6,6 +6,11 @@ import math
 from datetime import date, datetime, timedelta
 from calendar import monthrange
 from config import Config
+import bcrypt
+import re
+from pymongo import ReturnDocument
+from pymongo.errors import DuplicateKeyError
+import secrets
 
 
 # Create our Flask application
@@ -22,6 +27,19 @@ client = MongoClient(
 
 # Select our BookNest database
 db = client[app.config["MONGO_DB_NAME"]]
+
+
+# Keep user IDs unique
+db.User.create_index("user_id", unique=True)
+
+# Keep registered email addresses unique
+db.User.create_index(
+    "profile.contact.email",
+    unique=True,
+    partialFilterExpression={
+        "profile.contact.email": {"$type": "string"}
+    }
+)
 
 
 # Welcome endpoint
@@ -1277,6 +1295,133 @@ def get_room_utilisation():
         "days_in_month": days_in_month,
         "rooms": utilisation_report
     }), 200
+
+
+
+# Register a new customer account
+@app.route("/api/v1.0/register", methods=["POST"])
+def register_user():
+
+    data = request.get_json(silent=True)
+
+    if not isinstance(data, dict):
+        return jsonify({
+            "message": "A valid JSON object is required"
+        }), 400
+
+    first_name = data.get("first_name")
+    last_name = data.get("last_name")
+    email = data.get("email")
+    password = data.get("password")
+
+    if not all(isinstance(value, str) for value in [
+        first_name, last_name, email, password
+    ]):
+        return jsonify({
+            "message": "First name, last name, email and password are required"
+        }), 400
+
+    first_name = first_name.strip()
+    last_name = last_name.strip()
+    email = email.strip().lower()
+
+    if not first_name or not last_name or not email or not password:
+        return jsonify({
+            "message": "All registration fields are required"
+        }), 400
+
+    if len(first_name) > 100 or len(last_name) > 100:
+        return jsonify({
+            "message": "Names must not exceed 100 characters"
+        }), 400
+
+    email_pattern = r"^[^@\s]+@[^@\s]+\.[^@\s]+$"
+
+    if len(email) > 254 or not re.fullmatch(email_pattern, email):
+        return jsonify({
+            "message": "Please provide a valid email address"
+        }), 400
+
+    if len(password) < 8 or len(password.encode("utf-8")) > 72:
+        return jsonify({
+            "message": "Password must be between 8 and 72 bytes"
+        }), 400
+
+    # Check for an existing registered email
+    existing_user = db.User.find_one({
+        "profile.contact.email": email
+    })
+
+    if existing_user:
+        return jsonify({
+            "message": "An account with this email already exists"
+        }), 409
+
+    # Hash the password before saving
+    password_hash = bcrypt.hashpw(
+        password.encode("utf-8"),
+        bcrypt.gensalt()
+    ).decode("utf-8")
+
+    try:
+        # Retry if a randomly generated user ID already exists
+        for attempt in range(5):
+
+            new_user_id = secrets.randbelow(900000000) + 100000000
+
+            new_user = {
+                "user_id": new_user_id,
+                "profile": {
+                    "personal_details": {
+                        "first_name": first_name,
+                        "last_name": last_name
+                    },
+                    "contact": {
+                        "email": email,
+                        "phone": None
+                    }
+                },
+                "account": {
+                    "role": "customer",
+                    "authentication": {
+                        "registered": True,
+                        "password_hash": password_hash
+                    }
+                }
+            }
+
+            try:
+                db.User.insert_one(new_user)
+                break
+
+            except DuplicateKeyError as error:
+                if error.details and error.details.get("keyPattern") == {"user_id": 1}:
+                    continue
+
+                return jsonify({
+                    "message": "An account with this email already exists"
+                }), 409
+
+        else:
+            return jsonify({
+                "message": "Could not generate a unique user ID"
+            }), 500
+
+    except PyMongoError:
+        return jsonify({
+            "message": "Database error during registration"
+        }), 500
+
+    return jsonify({
+        "message": "User registered successfully",
+        "user": {
+            "user_id": new_user_id,
+            "first_name": first_name,
+            "last_name": last_name,
+            "email": email,
+            "role": "customer"
+        }
+    }), 201
 
 
 # Start Flask server
