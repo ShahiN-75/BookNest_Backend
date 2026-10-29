@@ -78,7 +78,7 @@ def token_required(f):
                     "message": "Invalid authentication token"
                 }), 401
 
-            # Confirm the customer still exists and is registered
+            # Confirm the user still exists and is registered
             user = db.User.find_one({
                 "user_id": user_id,
                 "account.authentication.registered": True
@@ -110,6 +110,20 @@ def token_required(f):
 
     return decorated
 
+def admin_required(f):
+    @wraps(f)
+    @token_required
+    def decorated(*args, **kwargs):
+        user = g.current_user
+
+        if user["account"]["role"] != "admin":
+            return jsonify({
+                "message": "Administrator access required"
+            }), 403
+
+        return f(*args, **kwargs)
+
+    return decorated
 
 # Welcome endpoint
 @app.route("/", methods=["GET"])
@@ -221,6 +235,7 @@ def show_one_room(room_id):
 
 # POST - Add a new room
 @app.route("/api/v1.0/rooms", methods=["POST"])
+@admin_required
 def add_room():
 
     data = request.get_json(silent=True)
@@ -278,6 +293,7 @@ def add_room():
 
 # PUT - Update an existing room
 @app.route("/api/v1.0/rooms/<int:room_id>", methods=["PUT"])
+@admin_required
 def update_room(room_id):
 
     data = request.get_json(silent=True)
@@ -329,6 +345,7 @@ def update_room(room_id):
 
 # DELETE - Remove a room by ID
 @app.route("/api/v1.0/rooms/<int:room_id>", methods=["DELETE"])
+@admin_required
 def delete_room(room_id):
 
     result = db.rooms.update_one(
@@ -1586,6 +1603,15 @@ def get_my_profile():
             "role": user["account"]["role"],
             "registered": user["account"]["authentication"]["registered"]
         }
+    }), 200
+
+# Admin-only endpoint to verify administrator access
+@app.route("/api/v1.0/admin/dashboard", methods=["GET"])
+@admin_required
+def admin_dashboard():
+    return jsonify({
+        "message": "Welcome to the BookNest admin dashboard",
+        "role": "admin"
     }), 200
 
 # Start Flask server
