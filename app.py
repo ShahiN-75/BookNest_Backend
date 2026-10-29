@@ -125,6 +125,16 @@ def admin_required(f):
 
     return decorated
 
+def can_manage_booking(booking):
+    current_user = g.current_user
+
+    # Admin can access any booking
+    if current_user["account"]["role"] == "admin":
+        return True
+
+    # Customer can access only their own booking
+    return booking["user_id"] == current_user["user_id"]
+
 # Welcome endpoint
 @app.route("/", methods=["GET"])
 def home():
@@ -484,6 +494,7 @@ def search_rooms():
 
 # Get all bookings
 @app.route("/api/v1.0/bookings", methods=["GET"])
+@admin_required
 def get_all_bookings():
     bookings_list = []
 
@@ -505,6 +516,7 @@ def get_all_bookings():
 
 # Get booking by ID
 @app.route("/api/v1.0/bookings/<int:booking_id>", methods=["GET"])
+@token_required
 def get_booking_by_id(booking_id):
 
     booking_group = db.Bookings.find_one(
@@ -518,18 +530,25 @@ def get_booking_by_id(booking_id):
                 for booking in month["bookings"]:
 
                     if booking["booking_id"] == booking_id:
+                        # Check booking ownership
+                        if not can_manage_booking(booking):
+                            return jsonify({
+                                "message": "You are not allowed to access this booking"
+                                }), 403
                         booking_data = booking.copy()
                         booking_data["room_id"] = room["room_id"]
                         booking_data["room_number"] = room["room_number"]
                         booking_data["room_type"] = booking_group["room_type"]
 
                         return jsonify(booking_data), 200
+                    
 
     return jsonify({"message": "Booking not found"}), 404
 
 
 # Create a new booking
 @app.route("/api/v1.0/bookings", methods=["POST"])
+@token_required
 def add_booking():
 
     data = request.get_json(silent=True)
@@ -561,6 +580,15 @@ def add_booking():
 
     if booking_id <= 0 or user_id <= 0 or room_id <= 0:
         return jsonify({"message": "IDs must be positive integers"}), 400
+
+    # Customers can only create bookings for themselves
+    current_user = g.current_user
+
+    if current_user["account"]["role"] != "admin":
+        if user_id != current_user["user_id"]:
+            return jsonify({
+            "message": "You cannot create a booking for another user"
+        }), 403
 
     if check_out <= check_in:
         return jsonify({"message": "Check-out must be after check-in"}), 400
@@ -712,6 +740,7 @@ def add_booking():
 
 # Update booking by ID
 @app.route("/api/v1.0/bookings/<int:booking_id>", methods=["PUT"])
+@token_required
 def update_booking(booking_id):
 
     data = request.get_json(silent=True)
@@ -751,7 +780,11 @@ def update_booking(booking_id):
             for booking in month["bookings"]:
 
                 if booking["booking_id"] == booking_id:
-
+                    # Check booking ownership
+                    if not can_manage_booking(booking):
+                        return jsonify({
+                            "message": "You are not allowed to update this booking"
+                        }), 403                    
                     # Check for overlapping active bookings
                     for other_month in room["months"]:
                         for other_booking in other_month["bookings"]:
@@ -842,6 +875,7 @@ def update_booking(booking_id):
 
 # Cancel booking by ID
 @app.route("/api/v1.0/bookings/<int:booking_id>/cancel", methods=["PATCH"])
+@token_required
 def cancel_booking(booking_id):
 
     # Find the booking in MongoDB
@@ -858,6 +892,11 @@ def cancel_booking(booking_id):
             for booking in month["bookings"]:
 
                 if booking["booking_id"] == booking_id:
+                    # Only the booking owner or admin can cancel it
+                    if not can_manage_booking(booking):
+                        return jsonify({
+                            "message": "You are not allowed to cancel this booking"
+                       }), 403
 
                     # Check if already cancelled
                     if booking["reservation"]["status"] == "cancelled":
@@ -896,6 +935,7 @@ def cancel_booking(booking_id):
 
 # Delete booking by ID
 @app.route("/api/v1.0/bookings/<int:booking_id>", methods=["DELETE"])
+@token_required
 def delete_booking(booking_id):
 
     # Find the booking in the collection
@@ -912,6 +952,12 @@ def delete_booking(booking_id):
             for booking in month["bookings"]:
 
                 if booking["booking_id"] == booking_id:
+
+                    # Only the booking owner or admin can delete it
+                    if not can_manage_booking(booking):
+                        return jsonify({
+                            "message": "You are not allowed to delete this booking"
+                            }), 403
 
                     # Remove only the matching booking
                     result = db.Bookings.update_one(
