@@ -3,7 +3,7 @@ from flask import Flask, jsonify, request
 from pymongo import MongoClient
 from pymongo.errors import PyMongoError
 import math
-from datetime import date, datetime, timedelta
+from datetime import date, datetime, timedelta, timezone
 from calendar import monthrange
 from config import Config
 import bcrypt
@@ -11,6 +11,9 @@ import re
 from pymongo import ReturnDocument
 from pymongo.errors import DuplicateKeyError
 import secrets
+import jwt
+from functools import wraps
+from flask import g
 
 
 # Create our Flask application
@@ -40,6 +43,72 @@ db.User.create_index(
         "profile.contact.email": {"$type": "string"}
     }
 )
+
+# Verify JWT before allowing access to protected endpoints
+def token_required(f):
+    @wraps(f)
+    def decorated(*args, **kwargs):
+
+        auth_header = request.headers.get("Authorization", "")
+
+        if not auth_header.startswith("Bearer "):
+            return jsonify({
+                "message": "Authentication token is required"
+            }), 401
+
+        token = auth_header[7:].strip()
+
+        if not token:
+            return jsonify({
+                "message": "Authentication token is required"
+            }), 401
+
+        try:
+            payload = jwt.decode(
+                token,
+                app.config["SECRET_KEY"],
+                algorithms=["HS256"],
+                options={"require": ["user_id", "role", "exp"]}
+            )
+
+            user_id = payload["user_id"]
+
+            if not isinstance(user_id, int) or isinstance(user_id, bool):
+                return jsonify({
+                    "message": "Invalid authentication token"
+                }), 401
+
+            # Confirm the customer still exists and is registered
+            user = db.User.find_one({
+                "user_id": user_id,
+                "account.authentication.registered": True
+            })
+
+            if user is None:
+                return jsonify({
+                    "message": "User account not found"
+                }), 401
+
+            g.current_user = user
+
+        except jwt.ExpiredSignatureError:
+            return jsonify({
+                "message": "Authentication token has expired"
+            }), 401
+
+        except jwt.InvalidTokenError:
+            return jsonify({
+                "message": "Invalid authentication token"
+            }), 401
+
+        except PyMongoError:
+            return jsonify({
+                "message": "Database error during authentication"
+            }), 503
+
+        return f(*args, **kwargs)
+
+    return decorated
 
 
 # Welcome endpoint
@@ -1423,6 +1492,101 @@ def register_user():
         }
     }), 201
 
+# Log in a registered customer
+@app.route("/api/v1.0/login", methods=["POST"])
+def login_user():
+
+    data = request.get_json(silent=True)
+
+    if not isinstance(data, dict):
+        return jsonify({
+            "message": "A valid JSON object is required"
+        }), 400
+
+    email = data.get("email")
+    password = data.get("password")
+
+    if not isinstance(email, str) or not isinstance(password, str):
+        return jsonify({
+            "message": "Email and password are required"
+        }), 400
+
+    email = email.strip().lower()
+
+    if not email or not password:
+        return jsonify({
+            "message": "Email and password are required"
+        }), 400
+
+    try:
+        # Find the registered customer
+        user = db.User.find_one({
+            "profile.contact.email": email,
+            "account.authentication.registered": True
+        })
+
+        if not user:
+            return jsonify({
+                "message": "Invalid email or password"
+            }), 401
+
+        password_hash = user["account"]["authentication"]["password_hash"]
+
+        # Verify the password
+        if not bcrypt.checkpw(
+            password.encode("utf-8"),
+            password_hash.encode("utf-8")
+        ):
+            return jsonify({
+                "message": "Invalid email or password"
+            }), 401
+
+        # Generate a JWT valid for 30 minutes
+        token = jwt.encode(
+            {
+                "user_id": user["user_id"],
+                "role": user["account"]["role"],
+                "exp": datetime.now(timezone.utc) + timedelta(minutes=30)
+            },
+            app.config["SECRET_KEY"],
+            algorithm="HS256"
+        )
+
+        return jsonify({
+            "message": "Login successful",
+            "token": token,
+            "user": {
+                "user_id": user["user_id"],
+                "first_name": user["profile"]["personal_details"]["first_name"],
+                "last_name": user["profile"]["personal_details"]["last_name"],
+                "email": email,
+                "role": user["account"]["role"]
+            }
+        }), 200
+
+    except PyMongoError:
+        return jsonify({
+            "message": "Database error during login"
+        }), 500
+
+# Get the authenticated customer's profile
+@app.route("/api/v1.0/users/me", methods=["GET"])
+@token_required
+def get_my_profile():
+
+    user = g.current_user
+
+    return jsonify({
+        "user_id": user["user_id"],
+        "profile": {
+            "personal_details": user["profile"]["personal_details"],
+            "contact": user["profile"]["contact"]
+        },
+        "account": {
+            "role": user["account"]["role"],
+            "registered": user["account"]["authentication"]["registered"]
+        }
+    }), 200
 
 # Start Flask server
 if __name__ == "__main__":
