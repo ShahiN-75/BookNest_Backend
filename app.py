@@ -990,6 +990,7 @@ def delete_booking(booking_id):
 
 # Calculate booking statistics
 @app.route("/api/v1.0/bookings/statistics", methods=["GET"])
+@admin_required
 def get_booking_statistics():
 
     total_bookings = 0
@@ -1040,6 +1041,7 @@ def get_booking_statistics():
 
 # Calculate monthly room occupancy
 @app.route("/api/v1.0/bookings/occupancy", methods=["GET"])
+@admin_required
 def get_room_occupancy():
 
     month = request.args.get("month")
@@ -1144,6 +1146,7 @@ def get_room_occupancy():
 
 # Calculate average length of stay
 @app.route("/api/v1.0/bookings/average-stay", methods=["GET"])
+@admin_required
 def get_average_length_of_stay():
 
     total_bookings = 0
@@ -1184,6 +1187,7 @@ def get_average_length_of_stay():
 
 # Calculate monthly booking revenue
 @app.route("/api/v1.0/bookings/monthly-revenue", methods=["GET"])
+@admin_required
 def get_monthly_booking_revenue():
 
     month = request.args.get("month")
@@ -1289,6 +1293,7 @@ def get_monthly_booking_revenue():
 
 # Generate monthly room utilisation report
 @app.route("/api/v1.0/rooms/utilisation", methods=["GET"])
+@admin_required
 def get_room_utilisation():
 
     month = request.args.get("month")
