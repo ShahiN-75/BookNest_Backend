@@ -1,0 +1,2042 @@
+[
+  {
+    "room_type": "Standard Double",
+    "room_category": {
+      "description": "Standard Double accommodation",
+      "rooms": [
+        {
+          "room_id": 101,
+          "room_number": "101",
+          "room_information": {
+            "description": "Standard Double room for up to 2 guests",
+            "occupancy": {
+              "maximum_guests": 2
+            }
+          },
+          "facilities": {
+            "amenity_groups": [
+              {
+                "category": "Connectivity",
+                "items": [
+                  {
+                    "name": "WiFi",
+                    "available": true
+                  }
+                ]
+              },
+              {
+                "category": "Entertainment",
+                "items": [
+                  {
+                    "name": "TV",
+                    "available": true
+                  }
+                ]
+              },
+              {
+                "category": "Refreshments",
+                "items": [
+                  {
+                    "name": "Tea/Coffee",
+                    "available": true
+                  }
+                ]
+              }
+            ]
+          },
+          "pricing": {
+            "rate_plans": [
+              {
+                "plan_name": "Standard Rate",
+                "rate_details": {
+                  "base_price_per_night": 75.0,
+                  "rate_unit": "night"
+                }
+              }
+            ]
+          },
+          "room_management": {
+            "availability": {
+              "current_status": "available"
+            }
+          }
+        },
+        {
+          "room_id": 102,
+          "room_number": "102",
+          "room_information": {
+            "description": "Standard Double room for up to 2 guests",
+            "occupancy": {
+              "maximum_guests": 2
+            }
+          },
+          "facilities": {
+            "amenity_groups": [
+              {
+                "category": "Connectivity",
+                "items": [
+                  {
+                    "name": "WiFi",
+                    "available": true
+                  }
+                ]
+              },
+              {
+                "category": "Entertainment",
+                "items": [
+                  {
+                    "name": "TV",
+                    "available": true
+                  }
+                ]
+              },
+              {
+                "category": "Refreshments",
+                "items": [
+                  {
+                    "name": "Tea/Coffee",
+                    "available": true
+                  }
+                ]
+              }
+            ]
+          },
+          "pricing": {
+            "rate_plans": [
+              {
+                "plan_name": "Standard Rate",
+                "rate_details": {
+                  "base_price_per_night": 75.0,
+                  "rate_unit": "night"
+                }
+              }
+            ]
+          },
+          "room_management": {
+            "availability": {
+              "current_status": "available"
+            }
+          }
+        },
+        {
+          "room_id": 103,
+          "room_number": "103",
+          "room_information": {
+            "description": "Standard Double room for up to 2 guests",
+            "occupancy": {
+              "maximum_guests": 2
+            }
+          },
+          "facilities": {
+            "amenity_groups": [
+              {
+                "category": "Connectivity",
+                "items": [
+                  {
+                    "name": "WiFi",
+                    "available": true
+                  }
+                ]
+              },
+              {
+                "category": "Entertainment",
+                "items": [
+                  {
+                    "name": "TV",
+                    "available": true
+                  }
+                ]
+              },
+              {
+                "category": "Refreshments",
+                "items": [
+                  {
+                    "name": "Tea/Coffee",
+                    "available": true
+                  }
+                ]
+              }
+            ]
+          },
+          "pricing": {
+            "rate_plans": [
+              {
+                "plan_name": "Standard Rate",
+                "rate_details": {
+                  "base_price_per_night": 75.0,
+                  "rate_unit": "night"
+                }
+              }
+            ]
+          },
+          "room_management": {
+            "availability": {
+              "current_status": "available"
+            }
+          }
+        },
+        {
+          "room_id": 104,
+          "room_number": "104",
+          "room_information": {
+            "description": "Standard Double room for up to 2 guests",
+            "occupancy": {
+              "maximum_guests": 2
+            }
+          },
+          "facilities": {
+            "amenity_groups": [
+              {
+                "category": "Connectivity",
+                "items": [
+                  {
+                    "name": "WiFi",
+                    "available": true
+                  }
+                ]
+              },
+              {
+                "category": "Entertainment",
+                "items": [
+                  {
+                    "name": "TV",
+                    "available": true
+                  }
+                ]
+              },
+              {
+                "category": "Refreshments",
+                "items": [
+                  {
+                    "name": "Tea/Coffee",
+                    "available": true
+                  }
+                ]
+              }
+            ]
+          },
+          "pricing": {
+            "rate_plans": [
+              {
+                "plan_name": "Standard Rate",
+                "rate_details": {
+                  "base_price_per_night": 75.0,
+                  "rate_unit": "night"
+                }
+              }
+            ]
+          },
+          "room_management": {
+            "availability": {
+              "current_status": "available"
+            }
+          }
+        },
+        {
+          "room_id": 105,
+          "room_number": "105",
+          "room_information": {
+            "description": "Standard Double room for up to 2 guests",
+            "occupancy": {
+              "maximum_guests": 2
+            }
+          },
+          "facilities": {
+            "amenity_groups": [
+              {
+                "category": "Connectivity",
+                "items": [
+                  {
+                    "name": "WiFi",
+                    "available": true
+                  }
+                ]
+              },
+              {
+                "category": "Entertainment",
+                "items": [
+                  {
+                    "name": "TV",
+                    "available": true
+                  }
+                ]
+              },
+              {
+                "category": "Refreshments",
+                "items": [
+                  {
+                    "name": "Tea/Coffee",
+                    "available": true
+                  }
+                ]
+              }
+            ]
+          },
+          "pricing": {
+            "rate_plans": [
+              {
+                "plan_name": "Standard Rate",
+                "rate_details": {
+                  "base_price_per_night": 75.0,
+                  "rate_unit": "night"
+                }
+              }
+            ]
+          },
+          "room_management": {
+            "availability": {
+              "current_status": "available"
+            }
+          }
+        },
+        {
+          "room_id": 106,
+          "room_number": "106",
+          "room_information": {
+            "description": "Standard Double room for up to 2 guests",
+            "occupancy": {
+              "maximum_guests": 2
+            }
+          },
+          "facilities": {
+            "amenity_groups": [
+              {
+                "category": "Connectivity",
+                "items": [
+                  {
+                    "name": "WiFi",
+                    "available": true
+                  }
+                ]
+              },
+              {
+                "category": "Entertainment",
+                "items": [
+                  {
+                    "name": "TV",
+                    "available": true
+                  }
+                ]
+              },
+              {
+                "category": "Refreshments",
+                "items": [
+                  {
+                    "name": "Tea/Coffee",
+                    "available": true
+                  }
+                ]
+              }
+            ]
+          },
+          "pricing": {
+            "rate_plans": [
+              {
+                "plan_name": "Standard Rate",
+                "rate_details": {
+                  "base_price_per_night": 75.0,
+                  "rate_unit": "night"
+                }
+              }
+            ]
+          },
+          "room_management": {
+            "availability": {
+              "current_status": "available"
+            }
+          }
+        },
+        {
+          "room_id": 107,
+          "room_number": "107",
+          "room_information": {
+            "description": "Standard Double room for up to 2 guests",
+            "occupancy": {
+              "maximum_guests": 2
+            }
+          },
+          "facilities": {
+            "amenity_groups": [
+              {
+                "category": "Connectivity",
+                "items": [
+                  {
+                    "name": "WiFi",
+                    "available": true
+                  }
+                ]
+              },
+              {
+                "category": "Entertainment",
+                "items": [
+                  {
+                    "name": "TV",
+                    "available": true
+                  }
+                ]
+              },
+              {
+                "category": "Refreshments",
+                "items": [
+                  {
+                    "name": "Tea/Coffee",
+                    "available": true
+                  }
+                ]
+              }
+            ]
+          },
+          "pricing": {
+            "rate_plans": [
+              {
+                "plan_name": "Standard Rate",
+                "rate_details": {
+                  "base_price_per_night": 75.0,
+                  "rate_unit": "night"
+                }
+              }
+            ]
+          },
+          "room_management": {
+            "availability": {
+              "current_status": "available"
+            }
+          }
+        },
+        {
+          "room_id": 108,
+          "room_number": "108",
+          "room_information": {
+            "description": "Standard Double room for up to 2 guests",
+            "occupancy": {
+              "maximum_guests": 2
+            }
+          },
+          "facilities": {
+            "amenity_groups": [
+              {
+                "category": "Connectivity",
+                "items": [
+                  {
+                    "name": "WiFi",
+                    "available": true
+                  }
+                ]
+              },
+              {
+                "category": "Entertainment",
+                "items": [
+                  {
+                    "name": "TV",
+                    "available": true
+                  }
+                ]
+              },
+              {
+                "category": "Refreshments",
+                "items": [
+                  {
+                    "name": "Tea/Coffee",
+                    "available": true
+                  }
+                ]
+              }
+            ]
+          },
+          "pricing": {
+            "rate_plans": [
+              {
+                "plan_name": "Standard Rate",
+                "rate_details": {
+                  "base_price_per_night": 75.0,
+                  "rate_unit": "night"
+                }
+              }
+            ]
+          },
+          "room_management": {
+            "availability": {
+              "current_status": "available"
+            }
+          }
+        }
+      ]
+    }
+  },
+  {
+    "room_type": "Standard Twin",
+    "room_category": {
+      "description": "Standard Twin accommodation",
+      "rooms": [
+        {
+          "room_id": 109,
+          "room_number": "109",
+          "room_information": {
+            "description": "Standard Twin room for up to 2 guests",
+            "occupancy": {
+              "maximum_guests": 2
+            }
+          },
+          "facilities": {
+            "amenity_groups": [
+              {
+                "category": "Connectivity",
+                "items": [
+                  {
+                    "name": "WiFi",
+                    "available": true
+                  }
+                ]
+              },
+              {
+                "category": "Entertainment",
+                "items": [
+                  {
+                    "name": "TV",
+                    "available": true
+                  }
+                ]
+              },
+              {
+                "category": "Refreshments",
+                "items": [
+                  {
+                    "name": "Tea/Coffee",
+                    "available": true
+                  }
+                ]
+              }
+            ]
+          },
+          "pricing": {
+            "rate_plans": [
+              {
+                "plan_name": "Standard Rate",
+                "rate_details": {
+                  "base_price_per_night": 80.0,
+                  "rate_unit": "night"
+                }
+              }
+            ]
+          },
+          "room_management": {
+            "availability": {
+              "current_status": "available"
+            }
+          }
+        },
+        {
+          "room_id": 110,
+          "room_number": "110",
+          "room_information": {
+            "description": "Standard Twin room for up to 2 guests",
+            "occupancy": {
+              "maximum_guests": 2
+            }
+          },
+          "facilities": {
+            "amenity_groups": [
+              {
+                "category": "Connectivity",
+                "items": [
+                  {
+                    "name": "WiFi",
+                    "available": true
+                  }
+                ]
+              },
+              {
+                "category": "Entertainment",
+                "items": [
+                  {
+                    "name": "TV",
+                    "available": true
+                  }
+                ]
+              },
+              {
+                "category": "Refreshments",
+                "items": [
+                  {
+                    "name": "Tea/Coffee",
+                    "available": true
+                  }
+                ]
+              }
+            ]
+          },
+          "pricing": {
+            "rate_plans": [
+              {
+                "plan_name": "Standard Rate",
+                "rate_details": {
+                  "base_price_per_night": 80.0,
+                  "rate_unit": "night"
+                }
+              }
+            ]
+          },
+          "room_management": {
+            "availability": {
+              "current_status": "available"
+            }
+          }
+        },
+        {
+          "room_id": 111,
+          "room_number": "111",
+          "room_information": {
+            "description": "Standard Twin room for up to 2 guests",
+            "occupancy": {
+              "maximum_guests": 2
+            }
+          },
+          "facilities": {
+            "amenity_groups": [
+              {
+                "category": "Connectivity",
+                "items": [
+                  {
+                    "name": "WiFi",
+                    "available": true
+                  }
+                ]
+              },
+              {
+                "category": "Entertainment",
+                "items": [
+                  {
+                    "name": "TV",
+                    "available": true
+                  }
+                ]
+              },
+              {
+                "category": "Refreshments",
+                "items": [
+                  {
+                    "name": "Tea/Coffee",
+                    "available": true
+                  }
+                ]
+              }
+            ]
+          },
+          "pricing": {
+            "rate_plans": [
+              {
+                "plan_name": "Standard Rate",
+                "rate_details": {
+                  "base_price_per_night": 80.0,
+                  "rate_unit": "night"
+                }
+              }
+            ]
+          },
+          "room_management": {
+            "availability": {
+              "current_status": "available"
+            }
+          }
+        },
+        {
+          "room_id": 112,
+          "room_number": "112",
+          "room_information": {
+            "description": "Standard Twin room for up to 2 guests",
+            "occupancy": {
+              "maximum_guests": 2
+            }
+          },
+          "facilities": {
+            "amenity_groups": [
+              {
+                "category": "Connectivity",
+                "items": [
+                  {
+                    "name": "WiFi",
+                    "available": true
+                  }
+                ]
+              },
+              {
+                "category": "Entertainment",
+                "items": [
+                  {
+                    "name": "TV",
+                    "available": true
+                  }
+                ]
+              },
+              {
+                "category": "Refreshments",
+                "items": [
+                  {
+                    "name": "Tea/Coffee",
+                    "available": true
+                  }
+                ]
+              }
+            ]
+          },
+          "pricing": {
+            "rate_plans": [
+              {
+                "plan_name": "Standard Rate",
+                "rate_details": {
+                  "base_price_per_night": 80.0,
+                  "rate_unit": "night"
+                }
+              }
+            ]
+          },
+          "room_management": {
+            "availability": {
+              "current_status": "available"
+            }
+          }
+        }
+      ]
+    }
+  },
+  {
+    "room_type": "Superior Double",
+    "room_category": {
+      "description": "Superior Double accommodation",
+      "rooms": [
+        {
+          "room_id": 113,
+          "room_number": "113",
+          "room_information": {
+            "description": "Superior Double room for up to 2 guests",
+            "occupancy": {
+              "maximum_guests": 2
+            }
+          },
+          "facilities": {
+            "amenity_groups": [
+              {
+                "category": "Connectivity",
+                "items": [
+                  {
+                    "name": "WiFi",
+                    "available": true
+                  }
+                ]
+              },
+              {
+                "category": "Entertainment",
+                "items": [
+                  {
+                    "name": "TV",
+                    "available": true
+                  }
+                ]
+              },
+              {
+                "category": "Climate Control",
+                "items": [
+                  {
+                    "name": "Air Conditioning",
+                    "available": true
+                  }
+                ]
+              },
+              {
+                "category": "Refreshments",
+                "items": [
+                  {
+                    "name": "Tea/Coffee",
+                    "available": true
+                  }
+                ]
+              }
+            ]
+          },
+          "pricing": {
+            "rate_plans": [
+              {
+                "plan_name": "Standard Rate",
+                "rate_details": {
+                  "base_price_per_night": 95.0,
+                  "rate_unit": "night"
+                }
+              }
+            ]
+          },
+          "room_management": {
+            "availability": {
+              "current_status": "available"
+            }
+          }
+        },
+        {
+          "room_id": 114,
+          "room_number": "114",
+          "room_information": {
+            "description": "Superior Double room for up to 2 guests",
+            "occupancy": {
+              "maximum_guests": 2
+            }
+          },
+          "facilities": {
+            "amenity_groups": [
+              {
+                "category": "Connectivity",
+                "items": [
+                  {
+                    "name": "WiFi",
+                    "available": true
+                  }
+                ]
+              },
+              {
+                "category": "Entertainment",
+                "items": [
+                  {
+                    "name": "TV",
+                    "available": true
+                  }
+                ]
+              },
+              {
+                "category": "Climate Control",
+                "items": [
+                  {
+                    "name": "Air Conditioning",
+                    "available": true
+                  }
+                ]
+              },
+              {
+                "category": "Refreshments",
+                "items": [
+                  {
+                    "name": "Tea/Coffee",
+                    "available": true
+                  }
+                ]
+              }
+            ]
+          },
+          "pricing": {
+            "rate_plans": [
+              {
+                "plan_name": "Standard Rate",
+                "rate_details": {
+                  "base_price_per_night": 95.0,
+                  "rate_unit": "night"
+                }
+              }
+            ]
+          },
+          "room_management": {
+            "availability": {
+              "current_status": "available"
+            }
+          }
+        },
+        {
+          "room_id": 115,
+          "room_number": "115",
+          "room_information": {
+            "description": "Superior Double room for up to 2 guests",
+            "occupancy": {
+              "maximum_guests": 2
+            }
+          },
+          "facilities": {
+            "amenity_groups": [
+              {
+                "category": "Connectivity",
+                "items": [
+                  {
+                    "name": "WiFi",
+                    "available": true
+                  }
+                ]
+              },
+              {
+                "category": "Entertainment",
+                "items": [
+                  {
+                    "name": "TV",
+                    "available": true
+                  }
+                ]
+              },
+              {
+                "category": "Climate Control",
+                "items": [
+                  {
+                    "name": "Air Conditioning",
+                    "available": true
+                  }
+                ]
+              },
+              {
+                "category": "Refreshments",
+                "items": [
+                  {
+                    "name": "Tea/Coffee",
+                    "available": true
+                  }
+                ]
+              }
+            ]
+          },
+          "pricing": {
+            "rate_plans": [
+              {
+                "plan_name": "Standard Rate",
+                "rate_details": {
+                  "base_price_per_night": 95.0,
+                  "rate_unit": "night"
+                }
+              }
+            ]
+          },
+          "room_management": {
+            "availability": {
+              "current_status": "available"
+            }
+          }
+        },
+        {
+          "room_id": 116,
+          "room_number": "116",
+          "room_information": {
+            "description": "Superior Double room for up to 2 guests",
+            "occupancy": {
+              "maximum_guests": 2
+            }
+          },
+          "facilities": {
+            "amenity_groups": [
+              {
+                "category": "Connectivity",
+                "items": [
+                  {
+                    "name": "WiFi",
+                    "available": true
+                  }
+                ]
+              },
+              {
+                "category": "Entertainment",
+                "items": [
+                  {
+                    "name": "TV",
+                    "available": true
+                  }
+                ]
+              },
+              {
+                "category": "Climate Control",
+                "items": [
+                  {
+                    "name": "Air Conditioning",
+                    "available": true
+                  }
+                ]
+              },
+              {
+                "category": "Refreshments",
+                "items": [
+                  {
+                    "name": "Tea/Coffee",
+                    "available": true
+                  }
+                ]
+              }
+            ]
+          },
+          "pricing": {
+            "rate_plans": [
+              {
+                "plan_name": "Standard Rate",
+                "rate_details": {
+                  "base_price_per_night": 95.0,
+                  "rate_unit": "night"
+                }
+              }
+            ]
+          },
+          "room_management": {
+            "availability": {
+              "current_status": "available"
+            }
+          }
+        },
+        {
+          "room_id": 117,
+          "room_number": "117",
+          "room_information": {
+            "description": "Superior Double room for up to 2 guests",
+            "occupancy": {
+              "maximum_guests": 2
+            }
+          },
+          "facilities": {
+            "amenity_groups": [
+              {
+                "category": "Connectivity",
+                "items": [
+                  {
+                    "name": "WiFi",
+                    "available": true
+                  }
+                ]
+              },
+              {
+                "category": "Entertainment",
+                "items": [
+                  {
+                    "name": "TV",
+                    "available": true
+                  }
+                ]
+              },
+              {
+                "category": "Climate Control",
+                "items": [
+                  {
+                    "name": "Air Conditioning",
+                    "available": true
+                  }
+                ]
+              },
+              {
+                "category": "Refreshments",
+                "items": [
+                  {
+                    "name": "Tea/Coffee",
+                    "available": true
+                  }
+                ]
+              }
+            ]
+          },
+          "pricing": {
+            "rate_plans": [
+              {
+                "plan_name": "Standard Rate",
+                "rate_details": {
+                  "base_price_per_night": 95.0,
+                  "rate_unit": "night"
+                }
+              }
+            ]
+          },
+          "room_management": {
+            "availability": {
+              "current_status": "available"
+            }
+          }
+        }
+      ]
+    }
+  },
+  {
+    "room_type": "Deluxe Double",
+    "room_category": {
+      "description": "Deluxe Double accommodation",
+      "rooms": [
+        {
+          "room_id": 118,
+          "room_number": "118",
+          "room_information": {
+            "description": "Deluxe Double room for up to 2 guests",
+            "occupancy": {
+              "maximum_guests": 2
+            }
+          },
+          "facilities": {
+            "amenity_groups": [
+              {
+                "category": "Connectivity",
+                "items": [
+                  {
+                    "name": "WiFi",
+                    "available": true
+                  }
+                ]
+              },
+              {
+                "category": "Entertainment",
+                "items": [
+                  {
+                    "name": "TV",
+                    "available": true
+                  }
+                ]
+              },
+              {
+                "category": "Climate Control",
+                "items": [
+                  {
+                    "name": "Air Conditioning",
+                    "available": true
+                  }
+                ]
+              },
+              {
+                "category": "Refreshments",
+                "items": [
+                  {
+                    "name": "Mini Fridge",
+                    "available": true
+                  },
+                  {
+                    "name": "Tea/Coffee",
+                    "available": true
+                  }
+                ]
+              }
+            ]
+          },
+          "pricing": {
+            "rate_plans": [
+              {
+                "plan_name": "Standard Rate",
+                "rate_details": {
+                  "base_price_per_night": 120.0,
+                  "rate_unit": "night"
+                }
+              }
+            ]
+          },
+          "room_management": {
+            "availability": {
+              "current_status": "available"
+            }
+          }
+        },
+        {
+          "room_id": 119,
+          "room_number": "119",
+          "room_information": {
+            "description": "Deluxe Double room for up to 2 guests",
+            "occupancy": {
+              "maximum_guests": 2
+            }
+          },
+          "facilities": {
+            "amenity_groups": [
+              {
+                "category": "Connectivity",
+                "items": [
+                  {
+                    "name": "WiFi",
+                    "available": true
+                  }
+                ]
+              },
+              {
+                "category": "Entertainment",
+                "items": [
+                  {
+                    "name": "TV",
+                    "available": true
+                  }
+                ]
+              },
+              {
+                "category": "Climate Control",
+                "items": [
+                  {
+                    "name": "Air Conditioning",
+                    "available": true
+                  }
+                ]
+              },
+              {
+                "category": "Refreshments",
+                "items": [
+                  {
+                    "name": "Mini Fridge",
+                    "available": true
+                  },
+                  {
+                    "name": "Tea/Coffee",
+                    "available": true
+                  }
+                ]
+              }
+            ]
+          },
+          "pricing": {
+            "rate_plans": [
+              {
+                "plan_name": "Standard Rate",
+                "rate_details": {
+                  "base_price_per_night": 120.0,
+                  "rate_unit": "night"
+                }
+              }
+            ]
+          },
+          "room_management": {
+            "availability": {
+              "current_status": "available"
+            }
+          }
+        },
+        {
+          "room_id": 120,
+          "room_number": "120",
+          "room_information": {
+            "description": "Deluxe Double room for up to 2 guests",
+            "occupancy": {
+              "maximum_guests": 2
+            }
+          },
+          "facilities": {
+            "amenity_groups": [
+              {
+                "category": "Connectivity",
+                "items": [
+                  {
+                    "name": "WiFi",
+                    "available": true
+                  }
+                ]
+              },
+              {
+                "category": "Entertainment",
+                "items": [
+                  {
+                    "name": "TV",
+                    "available": true
+                  }
+                ]
+              },
+              {
+                "category": "Climate Control",
+                "items": [
+                  {
+                    "name": "Air Conditioning",
+                    "available": true
+                  }
+                ]
+              },
+              {
+                "category": "Refreshments",
+                "items": [
+                  {
+                    "name": "Mini Fridge",
+                    "available": true
+                  },
+                  {
+                    "name": "Tea/Coffee",
+                    "available": true
+                  }
+                ]
+              }
+            ]
+          },
+          "pricing": {
+            "rate_plans": [
+              {
+                "plan_name": "Standard Rate",
+                "rate_details": {
+                  "base_price_per_night": 120.0,
+                  "rate_unit": "night"
+                }
+              }
+            ]
+          },
+          "room_management": {
+            "availability": {
+              "current_status": "available"
+            }
+          }
+        },
+        {
+          "room_id": 121,
+          "room_number": "121",
+          "room_information": {
+            "description": "Deluxe Double room for up to 2 guests",
+            "occupancy": {
+              "maximum_guests": 2
+            }
+          },
+          "facilities": {
+            "amenity_groups": [
+              {
+                "category": "Connectivity",
+                "items": [
+                  {
+                    "name": "WiFi",
+                    "available": true
+                  }
+                ]
+              },
+              {
+                "category": "Entertainment",
+                "items": [
+                  {
+                    "name": "TV",
+                    "available": true
+                  }
+                ]
+              },
+              {
+                "category": "Climate Control",
+                "items": [
+                  {
+                    "name": "Air Conditioning",
+                    "available": true
+                  }
+                ]
+              },
+              {
+                "category": "Refreshments",
+                "items": [
+                  {
+                    "name": "Mini Fridge",
+                    "available": true
+                  },
+                  {
+                    "name": "Tea/Coffee",
+                    "available": true
+                  }
+                ]
+              }
+            ]
+          },
+          "pricing": {
+            "rate_plans": [
+              {
+                "plan_name": "Standard Rate",
+                "rate_details": {
+                  "base_price_per_night": 120.0,
+                  "rate_unit": "night"
+                }
+              }
+            ]
+          },
+          "room_management": {
+            "availability": {
+              "current_status": "available"
+            }
+          }
+        },
+        {
+          "room_id": 122,
+          "room_number": "122",
+          "room_information": {
+            "description": "Deluxe Double room for up to 2 guests",
+            "occupancy": {
+              "maximum_guests": 2
+            }
+          },
+          "facilities": {
+            "amenity_groups": [
+              {
+                "category": "Connectivity",
+                "items": [
+                  {
+                    "name": "WiFi",
+                    "available": true
+                  }
+                ]
+              },
+              {
+                "category": "Entertainment",
+                "items": [
+                  {
+                    "name": "TV",
+                    "available": true
+                  }
+                ]
+              },
+              {
+                "category": "Climate Control",
+                "items": [
+                  {
+                    "name": "Air Conditioning",
+                    "available": true
+                  }
+                ]
+              },
+              {
+                "category": "Refreshments",
+                "items": [
+                  {
+                    "name": "Mini Fridge",
+                    "available": true
+                  },
+                  {
+                    "name": "Tea/Coffee",
+                    "available": true
+                  }
+                ]
+              }
+            ]
+          },
+          "pricing": {
+            "rate_plans": [
+              {
+                "plan_name": "Standard Rate",
+                "rate_details": {
+                  "base_price_per_night": 120.0,
+                  "rate_unit": "night"
+                }
+              }
+            ]
+          },
+          "room_management": {
+            "availability": {
+              "current_status": "available"
+            }
+          }
+        }
+      ]
+    }
+  },
+  {
+    "room_type": "Family Room",
+    "room_category": {
+      "description": "Family Room accommodation",
+      "rooms": [
+        {
+          "room_id": 123,
+          "room_number": "123",
+          "room_information": {
+            "description": "Family Room room for up to 4 guests",
+            "occupancy": {
+              "maximum_guests": 4
+            }
+          },
+          "facilities": {
+            "amenity_groups": [
+              {
+                "category": "Connectivity",
+                "items": [
+                  {
+                    "name": "WiFi",
+                    "available": true
+                  }
+                ]
+              },
+              {
+                "category": "Entertainment",
+                "items": [
+                  {
+                    "name": "TV",
+                    "available": true
+                  }
+                ]
+              },
+              {
+                "category": "Climate Control",
+                "items": [
+                  {
+                    "name": "Air Conditioning",
+                    "available": true
+                  }
+                ]
+              },
+              {
+                "category": "Refreshments",
+                "items": [
+                  {
+                    "name": "Mini Fridge",
+                    "available": true
+                  }
+                ]
+              },
+              {
+                "category": "Other Facilities",
+                "items": [
+                  {
+                    "name": "Family Seating",
+                    "available": true
+                  }
+                ]
+              }
+            ]
+          },
+          "pricing": {
+            "rate_plans": [
+              {
+                "plan_name": "Standard Rate",
+                "rate_details": {
+                  "base_price_per_night": 140.0,
+                  "rate_unit": "night"
+                }
+              }
+            ]
+          },
+          "room_management": {
+            "availability": {
+              "current_status": "available"
+            }
+          }
+        },
+        {
+          "room_id": 124,
+          "room_number": "124",
+          "room_information": {
+            "description": "Family Room room for up to 4 guests",
+            "occupancy": {
+              "maximum_guests": 4
+            }
+          },
+          "facilities": {
+            "amenity_groups": [
+              {
+                "category": "Connectivity",
+                "items": [
+                  {
+                    "name": "WiFi",
+                    "available": true
+                  }
+                ]
+              },
+              {
+                "category": "Entertainment",
+                "items": [
+                  {
+                    "name": "TV",
+                    "available": true
+                  }
+                ]
+              },
+              {
+                "category": "Climate Control",
+                "items": [
+                  {
+                    "name": "Air Conditioning",
+                    "available": true
+                  }
+                ]
+              },
+              {
+                "category": "Refreshments",
+                "items": [
+                  {
+                    "name": "Mini Fridge",
+                    "available": true
+                  }
+                ]
+              },
+              {
+                "category": "Other Facilities",
+                "items": [
+                  {
+                    "name": "Family Seating",
+                    "available": true
+                  }
+                ]
+              }
+            ]
+          },
+          "pricing": {
+            "rate_plans": [
+              {
+                "plan_name": "Standard Rate",
+                "rate_details": {
+                  "base_price_per_night": 140.0,
+                  "rate_unit": "night"
+                }
+              }
+            ]
+          },
+          "room_management": {
+            "availability": {
+              "current_status": "available"
+            }
+          }
+        },
+        {
+          "room_id": 125,
+          "room_number": "125",
+          "room_information": {
+            "description": "Family Room room for up to 4 guests",
+            "occupancy": {
+              "maximum_guests": 4
+            }
+          },
+          "facilities": {
+            "amenity_groups": [
+              {
+                "category": "Connectivity",
+                "items": [
+                  {
+                    "name": "WiFi",
+                    "available": true
+                  }
+                ]
+              },
+              {
+                "category": "Entertainment",
+                "items": [
+                  {
+                    "name": "TV",
+                    "available": true
+                  }
+                ]
+              },
+              {
+                "category": "Climate Control",
+                "items": [
+                  {
+                    "name": "Air Conditioning",
+                    "available": true
+                  }
+                ]
+              },
+              {
+                "category": "Refreshments",
+                "items": [
+                  {
+                    "name": "Mini Fridge",
+                    "available": true
+                  }
+                ]
+              },
+              {
+                "category": "Other Facilities",
+                "items": [
+                  {
+                    "name": "Family Seating",
+                    "available": true
+                  }
+                ]
+              }
+            ]
+          },
+          "pricing": {
+            "rate_plans": [
+              {
+                "plan_name": "Standard Rate",
+                "rate_details": {
+                  "base_price_per_night": 140.0,
+                  "rate_unit": "night"
+                }
+              }
+            ]
+          },
+          "room_management": {
+            "availability": {
+              "current_status": "available"
+            }
+          }
+        }
+      ]
+    }
+  },
+  {
+    "room_type": "Executive Room",
+    "room_category": {
+      "description": "Executive Room accommodation",
+      "rooms": [
+        {
+          "room_id": 126,
+          "room_number": "126",
+          "room_information": {
+            "description": "Executive Room room for up to 2 guests",
+            "occupancy": {
+              "maximum_guests": 2
+            }
+          },
+          "facilities": {
+            "amenity_groups": [
+              {
+                "category": "Connectivity",
+                "items": [
+                  {
+                    "name": "WiFi",
+                    "available": true
+                  }
+                ]
+              },
+              {
+                "category": "Entertainment",
+                "items": [
+                  {
+                    "name": "TV",
+                    "available": true
+                  }
+                ]
+              },
+              {
+                "category": "Climate Control",
+                "items": [
+                  {
+                    "name": "Air Conditioning",
+                    "available": true
+                  }
+                ]
+              },
+              {
+                "category": "Refreshments",
+                "items": [
+                  {
+                    "name": "Mini Fridge",
+                    "available": true
+                  },
+                  {
+                    "name": "Coffee Machine",
+                    "available": true
+                  }
+                ]
+              },
+              {
+                "category": "Living Space",
+                "items": [
+                  {
+                    "name": "Work Desk",
+                    "available": true
+                  }
+                ]
+              }
+            ]
+          },
+          "pricing": {
+            "rate_plans": [
+              {
+                "plan_name": "Standard Rate",
+                "rate_details": {
+                  "base_price_per_night": 165.0,
+                  "rate_unit": "night"
+                }
+              }
+            ]
+          },
+          "room_management": {
+            "availability": {
+              "current_status": "available"
+            }
+          }
+        },
+        {
+          "room_id": 127,
+          "room_number": "127",
+          "room_information": {
+            "description": "Executive Room room for up to 2 guests",
+            "occupancy": {
+              "maximum_guests": 2
+            }
+          },
+          "facilities": {
+            "amenity_groups": [
+              {
+                "category": "Connectivity",
+                "items": [
+                  {
+                    "name": "WiFi",
+                    "available": true
+                  }
+                ]
+              },
+              {
+                "category": "Entertainment",
+                "items": [
+                  {
+                    "name": "TV",
+                    "available": true
+                  }
+                ]
+              },
+              {
+                "category": "Climate Control",
+                "items": [
+                  {
+                    "name": "Air Conditioning",
+                    "available": true
+                  }
+                ]
+              },
+              {
+                "category": "Refreshments",
+                "items": [
+                  {
+                    "name": "Mini Fridge",
+                    "available": true
+                  },
+                  {
+                    "name": "Coffee Machine",
+                    "available": true
+                  }
+                ]
+              },
+              {
+                "category": "Living Space",
+                "items": [
+                  {
+                    "name": "Work Desk",
+                    "available": true
+                  }
+                ]
+              }
+            ]
+          },
+          "pricing": {
+            "rate_plans": [
+              {
+                "plan_name": "Standard Rate",
+                "rate_details": {
+                  "base_price_per_night": 165.0,
+                  "rate_unit": "night"
+                }
+              }
+            ]
+          },
+          "room_management": {
+            "availability": {
+              "current_status": "available"
+            }
+          }
+        },
+        {
+          "room_id": 128,
+          "room_number": "128",
+          "room_information": {
+            "description": "Executive Room room for up to 2 guests",
+            "occupancy": {
+              "maximum_guests": 2
+            }
+          },
+          "facilities": {
+            "amenity_groups": [
+              {
+                "category": "Connectivity",
+                "items": [
+                  {
+                    "name": "WiFi",
+                    "available": true
+                  }
+                ]
+              },
+              {
+                "category": "Entertainment",
+                "items": [
+                  {
+                    "name": "TV",
+                    "available": true
+                  }
+                ]
+              },
+              {
+                "category": "Climate Control",
+                "items": [
+                  {
+                    "name": "Air Conditioning",
+                    "available": true
+                  }
+                ]
+              },
+              {
+                "category": "Refreshments",
+                "items": [
+                  {
+                    "name": "Mini Fridge",
+                    "available": true
+                  },
+                  {
+                    "name": "Coffee Machine",
+                    "available": true
+                  }
+                ]
+              },
+              {
+                "category": "Living Space",
+                "items": [
+                  {
+                    "name": "Work Desk",
+                    "available": true
+                  }
+                ]
+              }
+            ]
+          },
+          "pricing": {
+            "rate_plans": [
+              {
+                "plan_name": "Standard Rate",
+                "rate_details": {
+                  "base_price_per_night": 165.0,
+                  "rate_unit": "night"
+                }
+              }
+            ]
+          },
+          "room_management": {
+            "availability": {
+              "current_status": "available"
+            }
+          }
+        }
+      ]
+    }
+  },
+  {
+    "room_type": "Suite",
+    "room_category": {
+      "description": "Suite accommodation",
+      "rooms": [
+        {
+          "room_id": 129,
+          "room_number": "129",
+          "room_information": {
+            "description": "Suite room for up to 4 guests",
+            "occupancy": {
+              "maximum_guests": 4
+            }
+          },
+          "facilities": {
+            "amenity_groups": [
+              {
+                "category": "Connectivity",
+                "items": [
+                  {
+                    "name": "WiFi",
+                    "available": true
+                  }
+                ]
+              },
+              {
+                "category": "Entertainment",
+                "items": [
+                  {
+                    "name": "TV",
+                    "available": true
+                  }
+                ]
+              },
+              {
+                "category": "Climate Control",
+                "items": [
+                  {
+                    "name": "Air Conditioning",
+                    "available": true
+                  }
+                ]
+              },
+              {
+                "category": "Refreshments",
+                "items": [
+                  {
+                    "name": "Mini Fridge",
+                    "available": true
+                  },
+                  {
+                    "name": "Coffee Machine",
+                    "available": true
+                  }
+                ]
+              },
+              {
+                "category": "Living Space",
+                "items": [
+                  {
+                    "name": "Living Area",
+                    "available": true
+                  }
+                ]
+              }
+            ]
+          },
+          "pricing": {
+            "rate_plans": [
+              {
+                "plan_name": "Standard Rate",
+                "rate_details": {
+                  "base_price_per_night": 220.0,
+                  "rate_unit": "night"
+                }
+              }
+            ]
+          },
+          "room_management": {
+            "availability": {
+              "current_status": "available"
+            }
+          }
+        },
+        {
+          "room_id": 130,
+          "room_number": "130",
+          "room_information": {
+            "description": "Suite room for up to 4 guests",
+            "occupancy": {
+              "maximum_guests": 4
+            }
+          },
+          "facilities": {
+            "amenity_groups": [
+              {
+                "category": "Connectivity",
+                "items": [
+                  {
+                    "name": "WiFi",
+                    "available": true
+                  }
+                ]
+              },
+              {
+                "category": "Entertainment",
+                "items": [
+                  {
+                    "name": "TV",
+                    "available": true
+                  }
+                ]
+              },
+              {
+                "category": "Climate Control",
+                "items": [
+                  {
+                    "name": "Air Conditioning",
+                    "available": true
+                  }
+                ]
+              },
+              {
+                "category": "Refreshments",
+                "items": [
+                  {
+                    "name": "Mini Fridge",
+                    "available": true
+                  },
+                  {
+                    "name": "Coffee Machine",
+                    "available": true
+                  }
+                ]
+              },
+              {
+                "category": "Living Space",
+                "items": [
+                  {
+                    "name": "Living Area",
+                    "available": true
+                  }
+                ]
+              }
+            ]
+          },
+          "pricing": {
+            "rate_plans": [
+              {
+                "plan_name": "Standard Rate",
+                "rate_details": {
+                  "base_price_per_night": 220.0,
+                  "rate_unit": "night"
+                }
+              }
+            ]
+          },
+          "room_management": {
+            "availability": {
+              "current_status": "available"
+            }
+          }
+        }
+      ]
+    }
+  }
+]
